@@ -1,0 +1,190 @@
+/* page size */
+@page {
+  size: A4; /* var(--width) doesn't work in browser when printing */
+  @bottom-right {
+    content: counter(page);
+  }
+}
+@page :blank {
+
+}
+
+/* store some string variables */
+.shorttitle1 {
+  string-set: h1-text content(text);
+}
+
+.shorttitle2 {
+  string-set: h2-text content(text);
+}
+
+/* left page */
+.running-h1-title {
+  position: running(runningH1Title);
+  width: var(--running-title-width);
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.running-h1-title:before {
+  content: string(h1-text);
+}
+
+@page chapter:left {
+  @top-right {
+    content: element(runningH1Title);
+    white-space: nowrap !important;
+  }
+}
+
+/* right page */
+.running-h2-title {
+  position: running(runningH2Title);
+  width: var(--running-title-width);
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.running-h2-title:before {
+  /* We would want to write: */
+  /* content: string(h2-text, start); */
+  /* However, this is yet unsupported by Paged.js, see https://gitlab.pagedmedia.org/tools/pagedjs/issues/38 */
+  content: string(h2-text);
+}
+@page chapter:right {
+  @top-left {
+    content: element(runningH2Title);
+    white-space: nowrap !important;
+  }
+}
+
+/* New chapter page */
+@page chapter:first {
+  @top-left {
+    content: none;
+  }
+  @top-right {
+    content: none;
+  }
+}
+@page :first {
+  margin-top: 9cm;
+  @top-left {
+    content: none;
+  }
+  @top-right {
+    content: none;
+  }
+  @bottom-right {
+    content: none !important;
+  }
+}
+
+/* Front matter*/
+@page frontmatter {
+  @bottom-right {
+    content: counter(page, lower-roman);
+  }
+}
+@page frontmatter:left {
+  @top-right {
+    content: element(runningH1Title);
+    white-space: nowrap !important;
+  }
+}
+@page frontmatter:right {
+  @top-left {
+    content: element(runningH1Title);
+    white-space: nowrap !important;
+  }
+}
+@page frontmatter:first {
+  @top-left {
+    content: none;
+  }
+  @top-right {
+    content: none;
+  }
+}
+
+/* page breaks; aka CSS fragmentation */
+.level1 {
+  /*break-before: recto;*/
+  page: chapter;
+}
+.front-matter-container .level1 {
+  page: frontmatter;
+}
+h1, h2, h3, h4, h5, h6 {
+  break-after: avoid;
+}
+.footenotes {
+  break-before: always;
+  break-after: always;
+}
+.figure {
+  break-inside: avoid;
+}
+
+/* reset page numbering after front matter */
+.front-matter-container+.level1 h1 {
+  counter-reset: page;
+}
+
+/*-----------*/
+/* My Custom */
+/*-----------*/
+
+a {
+  color: rgb(62,153,36);
+}
+
+p {
+  text-align: justify;
+  text-align-last: left;
+  display: block;
+  clear: both;
+}
+
+#TOC::before {
+  content: "Table des matières";
+}
+
+.break-before-me {
+  break-before: page;
+}
+
+table {
+  border-collapse: collapse;
+  border-bottom: none;
+  border-top: 5px solid rgb(85,85,85);
+  width: 100%;
+}
+
+/* hack because TOC doesn't change page if there is only a table in the section*/
+table::after {
+  content: " ";
+}
+
+tbody > tr > td,
+tfoot > tr > td {
+  background-color: white;
+}
+
+thead {
+  border-bottom: 1px solid black;
+  background-color: rgba(23,37,45,1);
+  color: rgb(230,230,230);
+  border-left: 5px solid rgb(85,85,85);
+  border-right: 5px solid rgb(85,85,85);
+}
+
+tbody {
+  border-bottom: 5px solid rgb(85,85,85);
+  border-top: 3px solid rgb(23,37,45);
+  border-left: 5px solid rgb(85,85,85);
+  border-right: 5px solid rgb(85,85,85);
+}
+
+th, td {
+  padding: 2px 5px;
+  vertical-align: top;
+}
