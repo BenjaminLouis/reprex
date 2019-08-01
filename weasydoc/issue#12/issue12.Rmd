@@ -1,0 +1,116 @@
+---
+lang: fr
+output: 
+  weasydoc::hpdf_document_base:
+    engine: "weasyprint"
+    keep_html: true
+    css: style.css
+---
+
+```{r echo = FALSE }
+library(knitr)
+library(kableExtra)
+library(htmltools)
+library(magrittr)
+tagList(rmarkdown::html_dependency_font_awesome())
+```
+
+## Example 1
+
+### Issue
+
+If you want to use `kable()` function in a css chunk (i.e. with `:::`), the latter is not recognized as CSS chunk but as text :
+
+:::{.red}
+
+A table with `{kable}` and `html` format
+
+```{r}
+ data.frame(x = 1:5, y = 1:5) %>%
+   kable(format = "html")
+```
+
+:::
+
+### Solution
+
+The solution is to use the `html` format with the `htmltools::HTML()` function
+
+:::{.green}
+
+A table with `{kable}` and `html` format and `htmltools::HTML()` function
+
+```{r}
+ data.frame(x = 1:5, y = 1:5) %>%
+   kable(format = "html") %>%
+  HTML()
+```
+
+:::
+
+OR to use the `markdown` format
+
+:::{.green}
+
+A table with `{kable}` and `markdown` format
+
+```{r}
+ data.frame(x = 1:5, y = 1:5) %>%
+   kable(format = "markdown")
+```
+
+:::
+
+
+## Example 2
+
+### Issue 1
+
+If you want to insert icons in a table using `kable` with solution 1 from issue #11, it doesn't work with `html` format :
+
+:::{.red}
+
+A table with `{kable}`, icons and `html` format
+
+```{r}
+ data.frame(x = "<i class=\"fa fa-envelope\"></i>", 
+            y = "test") %>%
+  kable(format = "html") %>%
+  HTML()
+```
+
+:::
+
+### Solution
+
+It works with `markdown` format
+
+:::{.green}
+
+A table with `{kable}`, icons and `markdown` format
+
+```{r}
+ data.frame(x = "<i class=\"fa fa-envelope\"></i>", 
+            y = "test") %>%
+  kable(format = "markdown")
+```
+
+:::
+
+### Issue 2
+
+But then, if you want to use package `{kableExtra}` to pimp your table, you can't as it supports only `html` (or latex) format
+
+:::{.red}
+
+A table with `{kable}`, icons, `{kableExtra}` and `markdown` format
+
+```{r}
+ data.frame(x = "<i class=\"fa fa-envelope\"></i>", 
+            y = "test") %>%
+  kable(format = "markdown") %>%
+  kable_styling(bootstrap_options = "striped", full_width = FALSE)
+```
+
+:::
+

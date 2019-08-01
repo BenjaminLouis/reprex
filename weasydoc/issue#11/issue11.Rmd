@@ -1,0 +1,42 @@
+---
+lang: fr
+output: 
+  weasydoc::hpdf_document_base:
+    engine: "weasyprint"
+    keep_html: true
+---
+
+# Solution 1
+
+```{r setup, include=FALSE}
+library(htmltools)
+tagList(rmarkdown::html_dependency_font_awesome())
+```
+
+<i class="fa fa-envelope"></i>
+
+# Solution 2
+
+```{r}
+fa_r <- fontawesome::fa("r-project")
+fa_r_raw <- charToRaw(fa_r)
+fa_r_enc <- paste0("data:image/svg+xml;charset=utf-8;base64,", 
+                   base64enc::base64encode(fa_r_raw))
+```
+
+R project icon : <img alt="R project" src="`r fa_r_enc`">
+
+# Solution 3
+
+```{r eval = FALSE}
+tmpfile <- tempfile(fileext = ".png")
+fontawesome::fa_png("r-project", tmpfile)
+knitr::include_graphics(tmpfile)
+```
+ return the error :
+ 
+ ```
+pandoc: /tmp/RtmpsvREEB/file24df44115aea.png: openBinaryFile: does not exist (No such file or directory)
+Erreur : pandoc document conversion failed with error 1
+Exécution arrêtée
+ ```
